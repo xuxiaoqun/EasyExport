@@ -20,24 +20,24 @@ public class TestController {
     @Autowired
     private UserMapper userMapper;
 
-    @RequestMapping("/1")
+    @PostMapping("/query")
     @EasyExport(pageQuery = false, fileName = "test", clazz = TestUserInfo.class)
-    public List<TestUserInfo> getUserInfo(HttpServletResponse response){
+    public List<TestUserInfo> queryUserInfo(HttpServletResponse response){
         return userMapper.selectList(null).stream().map(e -> new TestUserInfo(e.getId().toString(),e.getUserName(),e.getEmail())).toList();
     }
 
 
     //文件导出，分批查询写入，避免数据量过大，内存溢出
-    @RequestMapping("/3")
+    @PostMapping("/export")
     @EasyExport(fileName = "test1", clazz = TestUserInfo.class)
-    public List<TestUserInfo> getUserInfo(HttpServletResponse response, @RequestBody PageInfo pageInfo){
+    public List<TestUserInfo> exportUserInfo(HttpServletResponse response, @RequestBody PageInfo pageInfo){
         IPage<UserEntity> page = new Page<>(pageInfo.getPage(),pageInfo.getSize());
         return userMapper.selectPage(page,null).getRecords().stream().map(e -> new TestUserInfo(e.getId().toString(),e.getUserName(),e.getEmail())).toList();
     }
 
     //普通分页查询
-    @RequestMapping("/2")
-    public List<TestUserInfo> getUserInfo2(@RequestBody PageInfo pageInfo){
+    @PostMapping("/page")
+    public List<TestUserInfo> pageUserInfo(@RequestBody PageInfo pageInfo){
         IPage<UserEntity> page = new Page<>(pageInfo.getPage(),pageInfo.getSize());
         return userMapper.selectPage(page,null).getRecords().stream().map(e -> new TestUserInfo(e.getId().toString(),e.getUserName(),e.getEmail())).toList();
     }
